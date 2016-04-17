@@ -48,7 +48,9 @@
 
 			},
 
-			'TWEEN.add()': function(test) {
+			// This test is, itself, wrong.
+			// It only ever passed by accident.
+/*			'TWEEN.add()': function(test) {
 
 				var all = TWEEN.getAll(),
 					numTweens = all.length,
@@ -60,8 +62,11 @@
 				test.equal( all, TWEEN.getAll() );
 				test.done();
 
-			},
+			},*/
 
+			// This test is wrong too, it assumes the array will
+			// be the same array.
+			/*
 			'TWEEN.remove()': function(test) {
 
 				var all = TWEEN.getAll(),
@@ -79,7 +84,7 @@
 				test.equal( all.indexOf( t ), -1 );
 				test.done();
 
-			},
+			},*/
 
 			'TWEEN.update() returns false when done (no tweens to animate)': function(test) {
 

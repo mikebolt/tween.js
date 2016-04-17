@@ -32,61 +32,61 @@
 
 var TWEEN = TWEEN || (function () {
 
-	var _tweens = [];
+	var _tweens = {};
 
 	return {
 
 		getAll: function () {
 
-			return _tweens;
+      var result = [];
+      
+      var keys = Object.keys(_tweens);
+      for (var i = 0; i < keys.length; i++) {
+        result.push(_tweens[keys[i]]);
+      }
+      
+			return result;
 
 		},
 
 		removeAll: function () {
 
-			_tweens = [];
+			_tweens = {};
 
 		},
 
 		add: function (tween) {
 
-			_tweens.push(tween);
+      _tweens[tween.getId()] = tween;
 
 		},
 
 		remove: function (tween) {
 
-			var i = _tweens.indexOf(tween);
-
-			if (i !== -1) {
-				_tweens.splice(i, 1);
-			}
+      return delete _tweens[tween.getId()];
 
 		},
 
 		update: function (time) {
-
-			if (_tweens.length === 0) {
-				return false;
-			}
-
-			var i = 0;
-
+    
+      var keys = Object.keys(_tweens);
+      if (keys.length === 0) {
+        return false;
+      }
 			time = time !== undefined ? time : window.performance.now();
+      
+      for (var i = 0; i < keys.length; i++) {
+        _tweens[keys[i]].update(time);
+      }
+      
+      return true;
 
-			while (i < _tweens.length) {
-
-				if (_tweens[i].update(time)) {
-					i++;
-				} else {
-					_tweens.splice(i, 1);
-				}
-
-			}
-
-			return true;
-
-		}
+		},
+    
+    getNumberOfTweens: function() {
+      return Object.keys(_tweens).length;
+    }
+    
 	};
 
 })();
@@ -112,11 +112,18 @@ TWEEN.Tween = function (object) {
 	var _onUpdateCallback = null;
 	var _onCompleteCallback = null;
 	var _onStopCallback = null;
+  
+  var _id = TWEEN.nextId;
+  TWEEN.nextId++;
 
 	// Set all starting values present on the target object
 	for (var field in object) {
 		_valuesStart[field] = parseFloat(object[field], 10);
 	}
+  
+  this.getId = function() {
+    return _id;
+  }
 
 	this.to = function (properties, duration) {
 
@@ -221,7 +228,6 @@ TWEEN.Tween = function (object) {
 		return this;
 
 	};
-
 
 	this.easing = function (easing) {
 
@@ -372,6 +378,8 @@ TWEEN.Tween = function (object) {
 
 			} else {
 
+        TWEEN.remove(this);
+      
 				if (_onCompleteCallback !== null) {
 					_onCompleteCallback.call(_object);
 				}
@@ -393,6 +401,8 @@ TWEEN.Tween = function (object) {
 	};
 
 };
+
+TWEEN.nextId = 0;
 
 
 TWEEN.Easing = {
