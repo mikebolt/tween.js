@@ -8,6 +8,21 @@
  */
 
 
+/**
+ * _Group is the private name for the Group class. A tween group is a collection
+ * of tweens that may be controlled as a unit. The TWEEN object is a "global"
+ * instance of this class that you can use without creating a new group.
+ *
+ * You should create one or more new groups when you want to, for example,
+ * pause one group of tweens while letting another group continue to play.
+ * All tween groups must be updated separately! If you are using a
+ * requestAnimationFrame loop, then make sure to call
+ * `myGroup.update(timestamp)` for each group that you want to update at the
+ * current frame.
+ *
+ * Like the other classes in tween.js, this is an es5-style pseudo-class. This
+ * may be upgraded in the future to proper es6 classes.
+ */
 var _Group = function () {
 	this._tweens = {};
 	this._tweensAddedDuringUpdate = {};
@@ -22,6 +37,10 @@ _Group.prototype = {
 
 	},
 
+  /**
+   * Remove all tweens from this group, making it equivalent to a
+   * newly-created empty group.
+   */
 	removeAll: function () {
 
 		this._tweens = {};
@@ -42,6 +61,14 @@ _Group.prototype = {
 
 	},
 
+
+	/**
+   * Tweens are updated in "batches". If you add a new tween during an
+	 * update, then the new tween will be updated in the next batch.
+	 * If you remove a tween during an update, it may or may not be updated.
+	 * However, if the removed tween was added during the current batch,
+	 * then it will not be updated.
+   */
 	update: function (time, preserve) {
 
 		var tweenIds = Object.keys(this._tweens);
@@ -52,11 +79,6 @@ _Group.prototype = {
 
 		time = time !== undefined ? time : TWEEN.now();
 
-		// Tweens are updated in "batches". If you add a new tween during an
-		// update, then the new tween will be updated in the next batch.
-		// If you remove a tween during an update, it may or may not be updated.
-		// However, if the removed tween was added during the current batch,
-		// then it will not be updated.
 		while (tweenIds.length > 0) {
 			this._tweensAddedDuringUpdate = {};
 
@@ -81,6 +103,10 @@ _Group.prototype = {
 	}
 };
 
+/**
+ * The TWEEN object is the module-level (default) export. It is an instance
+ * of TWEEN.Group.
+ */
 var TWEEN = new _Group();
 
 TWEEN.Group = _Group;
@@ -88,7 +114,6 @@ TWEEN._nextId = 0;
 TWEEN.nextId = function () {
 	return TWEEN._nextId++;
 };
-
 
 // Include a performance.now polyfill.
 // In node.js, use process.hrtime.
@@ -119,7 +144,19 @@ else {
 	};
 }
 
-
+/**
+ * Create a new tween. All tweens need the following information:
+ * - target object (the first parameter here)
+ * - start values (these are inferred)
+ * - end values (these are specified in the required first parameter to `.to`)
+ * - a duration, usually specified in milliseconds (this is the required
+ *     second parameter to `.to`)
+ *
+ * @param {Object} object the "target" object which will have its values
+ *   automatically updated by tween.js.
+ * @param {Object} [group=TWEEN] the group to which this newly created tween
+ *   will be added.
+ */
 TWEEN.Tween = function (object, group) {
 	this._isPaused = false;
 	this._pauseStart = null;
@@ -146,7 +183,6 @@ TWEEN.Tween = function (object, group) {
 	this._onStopCallback = null;
 	this._group = group || TWEEN;
 	this._id = TWEEN.nextId();
-
 };
 
 TWEEN.Tween.prototype = {

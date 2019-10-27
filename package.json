@@ -19,13 +19,15 @@
   ],
   "dependencies": {},
   "scripts": {
-    "build": "rollup -c ./rollup.config.js",
+    "build": "rollup -c ./rollup.config.js && npm run build-api-docs",
+    "build-api-docs": "documentation build src/Tween.js -f md -o docs/api.md",
     "test": "npm run build && npm run test-unit && npm run test-lint",
     "test-unit": "nodeunit test/unit/nodeunitheadless.js",
     "test-lint": "eslint src/Tween.js"
   },
   "author": "tween.js contributors (https://github.com/tweenjs/tween.js/graphs/contributors)",
   "devDependencies": {
+    "documentation": "^12.1.2",
     "eslint": "^6.3.0",
     "nodeunit": "^0.9.5",
     "rollup": "^0.57.1"
