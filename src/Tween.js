@@ -159,7 +159,7 @@ TWEEN.Tween.prototype = {
 	},
 
 	isReady: function() {
-		return this._group && this._object && this._valuesEnd;
+		return !!(this._group && this._object && this._valuesEnd);
 	},
 
 	isPlaying: function () {

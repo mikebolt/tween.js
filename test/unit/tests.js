@@ -1493,6 +1493,31 @@
 
 			},
 
+			'isReady() returns false before to() is called using the old initialization method':
+			function(test) {
+
+				var a = {x: 10};
+				const tween = new TWEEN.Tween(a);
+
+				test.equal(tween.isReady(), false);
+
+				test.done();
+
+			},
+
+			'isReady() returns true after to() is called using the old initialization method':
+			function(test) {
+
+				var a = {x: 10};
+				const tween = new TWEEN.Tween(a);
+				tween.to({x: 50}, 2000);
+
+				test.equal(tween.isReady(), true);
+
+				test.done();
+
+			},
+
 
 		};
 
