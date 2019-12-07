@@ -119,39 +119,47 @@ else {
 	};
 }
 
-
 TWEEN.Tween = function (object, group) {
-	this._isPaused = false;
-	this._pauseStart = null;
+	this._init();
 	this._object = object;
-	this._valuesStart = {};
-	this._valuesEnd = {};
-	this._valuesStartRepeat = {};
-	this._duration = 1000;
-	this._repeat = 0;
-	this._repeatDelayTime = undefined;
-	this._yoyo = false;
-	this._isPlaying = false;
-	this._reversed = false;
-	this._delayTime = 0;
-	this._startTime = null;
-	this._easingFunction = TWEEN.Easing.Linear.None;
-	this._interpolationFunction = TWEEN.Interpolation.Linear;
-	this._chainedTweens = [];
-	this._onStartCallback = null;
-	this._onStartCallbackFired = false;
-	this._onUpdateCallback = null;
-	this._onRepeatCallback = null;
-	this._onCompleteCallback = null;
-	this._onStopCallback = null;
 	this._group = group || TWEEN;
-	this._id = TWEEN.nextId();
-
 };
 
 TWEEN.Tween.prototype = {
+	_init: function() {
+		this._isPaused = false;
+		this._pauseStart = null;
+		this._object = null;
+		this._valuesStart = {};
+		this._valuesEnd = null;
+		this._valuesStartRepeat = {};
+		this._duration = 1000;
+		this._repeat = 0;
+		this._repeatDelayTime = undefined;
+		this._yoyo = false;
+		this._isPlaying = false;
+		this._reversed = false;
+		this._delayTime = 0;
+		this._startTime = null;
+		this._easingFunction = TWEEN.Easing.Linear.None;
+		this._interpolationFunction = TWEEN.Interpolation.Linear;
+		this._chainedTweens = [];
+		this._onStartCallback = null;
+		this._onStartCallbackFired = false;
+		this._onUpdateCallback = null;
+		this._onRepeatCallback = null;
+		this._onCompleteCallback = null;
+		this._onStopCallback = null;
+		this._group = null;
+		this._id = TWEEN.nextId();
+	},
+
 	getId: function () {
 		return this._id;
+	},
+
+	isReady: function() {
+		return this._group && this._object && this._valuesEnd;
 	},
 
 	isPlaying: function () {
